@@ -190,11 +190,6 @@ def get_inventory_value(location=None):
     
     return total
 
-
-
-
-
-
 def calculate_reorder_point(product, location, lookback_days=30):
     """
     Calculate reorder point based on historical demand.

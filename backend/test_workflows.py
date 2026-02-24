@@ -1,3 +1,9 @@
+import os
+import django
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'supply_chain.settings')
+django.setup()
+
 """
 Quick test script for business logic.
 Run with: python manage.py shell < test_workflows.py
@@ -9,15 +15,27 @@ from orders.models import PurchaseOrder, PurchaseOrderItem
 from orders.workflows import confirm_purchase_order, receive_purchase_order
 from django.utils import timezone
 
-# Get or create user
-user = User.objects.first()
+user, _ = User.objects.get_or_create(
+    username='dummy_user',
+    defaults={'email': 'dummy@test.com'}
+)
 
-# Get locations
-supplier = Location.objects.filter(location_type='supplier').first()
-warehouse = Location.objects.filter(location_type='warehouse').first()
+# Get or create locations
+supplier, _ = Location.objects.get_or_create(
+    location_type='supplier',
+    defaults={'name': 'dummy Supplier'} 
+)
 
-# Get product
-product = Product.objects.first()
+warehouse, _ = Location.objects.get_or_create(
+    location_type='warehouse',
+    defaults={'name': 'dummy Warehouse'} 
+)
+
+# Get or create product
+product, _ = Product.objects.get_or_create(
+    name='dummy Widget',
+    defaults={'sku': 'dummy WIDGET-001'}
+)
 
 if supplier and warehouse and product:
     print(f"✓ Found: {supplier}, {warehouse}, {product}")

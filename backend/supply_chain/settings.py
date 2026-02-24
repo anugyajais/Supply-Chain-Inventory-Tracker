@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'inventory.apps.InventoryConfig',
     'orders.apps.OrdersConfig',
     'analytics.apps.AnalyticsConfig',
+    
 ]
 
 MIDDLEWARE = [
