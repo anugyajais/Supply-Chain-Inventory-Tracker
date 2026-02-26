@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Purchase Order | SC Tracker{% endblock %}
+
+{% block content %}
+<div class="row mt-4 justify-content-center">
+    <div class="col-md-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>📝 Create Purchase Order</h2>
+            <a href="/" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> Error: {{ error }}
+        </div>
+        {% endif %}
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="POST" action="{% url 'create_po' %}">
+                    {% csrf_token %} <h5 class="mb-3 border-bottom pb-2 text-primary">1. Routing Information</h5>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Supplier</label>
+                            <select name="supplier" class="form-select" required>
+                                <option value="">Select a supplier...</option>
+                                {% for supplier in suppliers %}
+                                    <option value="{{ supplier.id }}">{{ supplier.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Destination Warehouse</label>
+                            <select name="destination" class="form-select" required>
+                                <option value="">Select a destination...</option>
+                                {% for warehouse in warehouses %}
+                                    <option value="{{ warehouse.id }}">{{ warehouse.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <h5 class="mb-3 border-bottom pb-2 text-primary">2. Line Item Detail</h5>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Product</label>
+                            <select name="product" class="form-select" required>
+                                <option value="">Select a product...</option>
+                                {% for product in products %}
+                                    <option value="{{ product.id }}">{{ product.name }} ({{ product.sku }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Quantity</label>
+                            <input type="number" name="quantity" class="form-control" min="1" value="100" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Unit Cost ($)</label>
+                            <input type="number" name="unit_cost" class="form-control" step="0.01" min="0" placeholder="0.00" required>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-file-earmark-plus"></i> Create Draft PO
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

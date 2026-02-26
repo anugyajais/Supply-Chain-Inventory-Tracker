@@ -26,6 +26,7 @@ URL configuration for supply_chain project.
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -36,9 +37,27 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+from inventory.views import dashboard, inventory_list, add_user, add_product 
+from orders.views import create_po, order_list, receive_po
+
 urlpatterns = [
-    # Admin
+
     path('admin/', admin.site.urls),
+    
+    # --- Auth URLs ---
+    path('add-user/', add_user, name='add_user'), 
+    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    
+    # --- App URLs ---
+    path('', dashboard, name='dashboard'),
+    path('inventory/', inventory_list, name='inventory_list'),
+
+    path('orders/', order_list, name='order_list'),            
+    path('orders/create-po/', create_po, name='create_po'),
+    path('orders/<int:po_id>/receive/', receive_po, name='receive_po'), 
+
+    path('products/add/', add_product, name='add_product'),
     
     # API Authentication
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

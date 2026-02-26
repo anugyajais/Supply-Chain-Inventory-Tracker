@@ -85,13 +85,15 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'supply_chain.urls'
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -99,7 +101,6 @@ TEMPLATES = [
         },
     },
 ]
-
 WSGI_APPLICATION = 'supply_chain.wsgi.application'
 
 
@@ -253,3 +254,7 @@ LOGGING = {
         'level': 'INFO',
     },
 }
+# Redirect to the dashboard after login
+LOGIN_REDIRECT_URL = '/'
+# Where to send users who aren't logged in
+LOGIN_URL = 'login'

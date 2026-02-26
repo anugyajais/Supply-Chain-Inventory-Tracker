@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Global Inventory | SC Tracker{% endblock %}
+
+{% block content %}
+<div class="row mt-4 mb-3">
+    <div class="col-md-8">
+        <h2>📦 Global Inventory Status</h2>
+    </div>
+    <div class="col-md-4">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search products or locations...">
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0" id="inventoryTable">
+            <thead class="table-dark">
+                <tr>
+                    <th>Product Name</th>
+                    <th>SKU</th>
+                    <th>Location</th>
+                    <th>On Hand</th>
+                    <th>Incoming</th>
+                    <th>Reorder Point</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in inventory_items %}
+                <tr>
+                    <td class="product-name fw-bold">{{ item.product.name }}</td>
+                    <td><span class="badge bg-secondary">{{ item.product.sku }}</span></td>
+                    <td class="location-name">{{ item.location.name }}</td>
+                    
+                    <td class="fs-5 {% if item.quantity_on_hand < item.reorder_point %}text-danger fw-bold{% else %}text-success{% endif %}">
+                        {{ item.quantity_on_hand }}
+                    </td>
+                    
+                    <td class="text-primary fw-bold">{{ item.quantity_incoming }}</td>
+                    <td>{{ item.reorder_point }}</td>
+                    <td>
+                        {% if item.quantity_on_hand == 0 %}
+                            <span class="badge bg-danger">Out of Stock</span>
+                        {% elif item.quantity_on_hand < item.reorder_point %}
+                            <span class="badge bg-warning text-dark">Low Stock</span>
+                        {% else %}
+                            <span class="badge bg-success">Healthy</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-5 text-muted">
+                        <i class="bi bi-box-seam fs-1 d-block mb-2"></i>
+                        No inventory records found. Add some in the Admin Panel!
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('#inventoryTable tbody tr');
+
+        rows.forEach(row => {
+            // Ignore the empty state row if there's no data
+            if (row.cells.length === 1) return;
+
+            let productName = row.querySelector('.product-name').textContent.toLowerCase();
+            let locationName = row.querySelector('.location-name').textContent.toLowerCase();
+
+            // Check if search matches product name or location
+            if (productName.includes(filter) || locationName.includes(filter)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}
